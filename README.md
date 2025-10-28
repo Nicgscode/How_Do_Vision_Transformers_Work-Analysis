@@ -11,13 +11,18 @@ Park, N., & Kim, S. (2022). How Do Vision Transformers Work?. In International C
 ---
 ___
 ## Overview - Five-minute overview providing context, stating the problem the paper is addressing, characterizing the approach, and giving a brief account of how the problem was addressed
-- **The abstract says it all**: "The success of multi-head self-attentions (MSAs) for computer vision is now indisputable. However, little is known about how MSAs work. We present fundamental explanations to help better understand the nature of MSAs"
-- The problems raised in this paper: 
+**The abstract says it all**: "The success of multi-head self-attentions (MSAs) for computer vision is now indisputable. However, little is known about how MSAs work. We present fundamental explanations to help better understand the nature of MSAs."
+
+**Context**
+Following the success of the original Vision Transformer (ViT) introduced by Dosovitskiy et al. in 2020, Multi-head Self-Attention (MSA) mechanisms have become ubiquitous in computer vision. By 2022, numerous variants—including Swin Transformer, PiT, and Twins—demonstrated that MSAs could match or exceed the performance of traditional Convolutional Neural Networks (CNNs) on various vision tasks. Despite this empirical success, the fundamental mechanisms explaining why MSAs work remained poorly understood. The prevailing explanation attributed their success to "weak inductive bias" and "long-range dependency"—the ability to connect distant spatial locations in an image.
+
+
+- **The problems raised in this paper**: 
      - MSAs are generally not defined well despite its ubiquitous success.
-     - MSAs are generally thought to be successful due to their their weak inductive bias and capture of long-range dependencies, but have been known to have a tendency to overfit training datasets, consequently leading to poor predictive performance in small data regimes. 
- 
+     - MSAs are generally thought to be successful due to their their weak inductive bias and capture of long-range dependencies-the ability to connect distant spatial locations in an image, but have been known to have a tendency to overfit training datasets, consequently leading to poor predictive performance in small data regimes. This is conflicting.
+     - 
        
-- The paper showcases MSAs ability to:
+- **The paper showcases MSAs ability to**:
    - flatten lost landscapes (Due to data specificity, not long range dependency)
    - MSAs act as low pass filters
    - Play a key role in model's predictions if placed at the end of multi-stage neural networks.
