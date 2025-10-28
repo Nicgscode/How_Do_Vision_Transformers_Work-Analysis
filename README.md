@@ -25,20 +25,24 @@ Following the success of the original Vision Transformer (ViT) introduced by [Do
 - What are listed as strengths for MSAs conflict with their weaknesses.
      - Specifically the "weak inductive bias" strength. If this is a benefit, why would MSAs struggle on small datasets?
 - Local MSAs (small window MSAs) achieve better performance than global MSAs on small and large datasets.
-- ViTs only outperform CNNs on large datasets.
-- 
+- ViTs only outperform CNNs (Convolutional Neural Network) on large datasets.
 
 # **Approach**:
 
-This paper has three analytical approaches to addressing these problems
+This paper has three analytical approaches to addressing these problems. Most of which it will compare ViTs to [ResNeT](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)-A CNN image model
 - **Loss Landscape Map Analysis**
-  ![](Hessian_Eigenspace)
+  ![](Hessian_Eigenspace.png)
      - Looking at the Hessian (Second partial derivative) eigenvalues (how a matrix transforms space) of the loss landscape to measure local curvature and convexity.
      - Visualize loss landscapes using [filter normalization](https://arxiv.org/pdf/1712.09913) (calculated by taking the square root of the sum of the squares of all its elements)
      - Analyzes how local vs. global MSAs affect losses.
  
 - **Fourier Domain Analysis**
-     ![]()
+     ![](Fourier_Domain_Analysis.png)
+  - The authors examaine the feature map in the fourier domain
+  - Meaasures high vs. low frequency accuracies
+
+- **Feature Map Statistics**
+       ![]()
 
 
 # **Positives**:
