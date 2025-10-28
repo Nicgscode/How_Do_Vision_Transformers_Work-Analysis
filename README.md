@@ -73,7 +73,17 @@ _____
 ## **What could have been developed further**:
 - "If the added MSA block does not improve predictive performance, replace a Conv block located at the end of an earlier stage with an MSA block." (Build-up rule; Section 4.1)
 - The above rule appears to be a rule the authors learned as they experiemented, but did not take the time to understand why architecturally this works well. They should have taken the time to find the theoretical reasoning behind this.
-- My using this paper as a source, I would assume this is a rule because of the loss flattening ability of MSAs, but it is never explicitly stated in the reading. 
+- My using this paper as a source, I would assume this is a rule because of the loss flattening ability of MSAs, but it is never explicitly stated in the reading.
+
+## **How did the study stand years after?**:
+- Data Specificity > Long-Range Dependency did not hold up with time
+
+**Scaling trends contradict this**:
+- Paper's argument: "Local MSAs (5×5) > Global MSAs (8×8)"
+     - Therefore → Long-range dependency not important
+- Reality: [ViT-22B](https://arxiv.org/pdf/2302.05442) (global attention)
+     - Achieve state-of-the-art on many tasks
+     - Long-range DOES matter at scale!
 _____
 # Citations
 - **Paper:** "How Do Vision Transformers Work?" (Park & Kim, ICLR 2022)
