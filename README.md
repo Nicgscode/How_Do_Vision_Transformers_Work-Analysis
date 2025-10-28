@@ -84,6 +84,13 @@ _____
 - Reality: [ViT-22B](https://arxiv.org/pdf/2302.05442) (global attention)
      - Achieve state-of-the-art on many tasks
      - Long-range DOES matter at scale!
+
+_____
+## Impacts
+
+_____
+## Code Demonstration
+
 _____
 # Citations
 - **Paper:** "How Do Vision Transformers Work?" (Park & Kim, ICLR 2022)
