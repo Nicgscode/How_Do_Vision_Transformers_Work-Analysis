@@ -54,8 +54,8 @@ This paper has three analytical approaches to addressing these problems. Most of
   - What are listed as strengths for MSAs conflict with their weaknesses
        - The paper redefines weak inductive bias as a **LIABILITY**, not a strength. ~ "A small patch size, or a weak inductive bias, produces negative eigenvalues" Meaning non-convex losses. 
     
-  - Local MSAs (small window MSAs) achieve better performance than global MSAs on small and large datasets 
-
+  - Local MSAs (small window MSAs) achieve better performance than global MSAs on small and large datasets
+         - 
 
 # **Positives**:
    - Flatten lost landscapes (Due to data specificity, not long range dependency)
