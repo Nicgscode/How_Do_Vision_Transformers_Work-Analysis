@@ -85,6 +85,16 @@ _____
 **Output:**  
 `ŷ ∈ ℝ^(B×100)`, class logits for CIFAR-100
 
+**Build up Rule:**
+Design rules:
+
+• Replace Conv blocks with MSA blocks from the end of a baseline CNN model.
+
+• If the added MSA block does not improve predictive performance, replace a Conv blocklocated at the end of an earlier stage with an MSA block.
+
+• Use more heads and higher hidden dimensions for MSA blocks in late stages.
+
+
 **Procedure:**
 
 1. `z ← Stem(x)`  
