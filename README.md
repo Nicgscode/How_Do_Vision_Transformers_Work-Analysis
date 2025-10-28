@@ -7,12 +7,94 @@
 **Full Citation:**  
 Park, N., & Kim, S. (2022). How Do Vision Transformers Work?. In International Conference on Learning Representations (ICLR 2022). arXiv:2202.06709v4 [cs.CV]
 
+
+# Algorithm: Extract Datasets from HDF5 File
+
+**Input**: HDF5 file `Samples_Test.hdf5` containing groups `Simulated_ASD` and `Simulated_Params`.
+
+**Output**: NumPy arrays `asd`, `qasd`, `params`, and `freq`.
+
+---
+
+**Steps**:
+
+1. **Open the HDF5 file**:
+   
+   - Use `h5py.File` in read mode to access the file.
+
+2. **Access groups**:
+   
+   - Retrieve `Simulated_ASD` and `Simulated_Params` groups.
+
+3. **Extract datasets**:
+   
+   - From `Simulated_ASD`:
+     - `ASD` → `asd`
+     - `QASD` → `qasd`
+   - From `Simulated_Params`:
+     - `Parameters` → `params`
+     - `Frequency` → `freq`
+
+4. **Convert to NumPy arrays**:
+   
+   - Use `np.array()` to convert each dataset.
+
+5. **Print shapes of arrays**:
+   
+   - Display the shape of each array for verification.
+
+---
+
+**Pseudocode**:
+
+```python
+import h5py
+import numpy as np
+
+with h5py.File('Samples_Test.hdf5', 'r') as hf:
+    g1 = hf['Simulated_ASD']
+    g2 = hf['Simulated_Params']
+
+    asd = np.array(g1['ASD'])
+    qasd = np.array(g1['QASD'])
+    params = np.array(g2['Parameters'])
+    freq = np.array(g2['Frequency'])
+
+print("ASD shape:", asd.shape)
+print("QASD shape:", qasd.shape)
+print("Parameters shape:", params.shape)
+print("Frequency shape:", freq.shape)
+```
+
+---
+
+**Note**: Ensure the file `Samples_Test.hdf5` is present in the working directory.
+
 ___
 ## Overview 
 - 
 
 _____
 ## Architecture overview
+
+# Algorithm: Multihead Self Attention
+
+**Input**: $$X \in \mathbb{R}^{d_{batch} \times d_{seq} \times d_{model}}$$, Input tensor
+
+**Input**: Number of Heads `num_heads`
+
+**Input**: Dimensions of model `d_{model}`.
+
+**Output**: NumPy arrays `asd`, `qasd`, `params`, and `freq`.
+
+---
+
+**Steps**:
+
+1. **Open the HDF5 file**:
+   
+   - Use `h5py.File` in read mode to access the file.
+
 ```python
 ### Multi-Head Self-Attention (MSA) Mechanism
 
@@ -69,6 +151,9 @@ def multi_head_self_attention(X, num_heads, d_model):
 # - Convolution: Fixed kernel, data-agnostic, channel-specific
 # - MSA: Learned kernel PER INPUT, data-specific, channel-agnostic
 ```
+# Algorithm
+** Input ** 
+
 
 ### Local MSA (Swin-style)
 
