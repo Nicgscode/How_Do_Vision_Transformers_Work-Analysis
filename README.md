@@ -1,4 +1,4 @@
-# How_Do_Vision_Transformers_Work? - Analysis
+# How Do Vision Transformers Work? - Analysis
 **DS 5690 Paper Presntation**
 
 *Authors: Namuk Park & Songkuk Kim (Yonsei University, NAVER AI Lab)*  
@@ -6,24 +6,28 @@
 
 **Full Citation:**  
 Park, N., & Kim, S. (2022). How Do Vision Transformers Work?. In International Conference on Learning Representations (ICLR 2022). arXiv:2202.06709v4 [cs.CV]
-
-
----
 ___
 ## Overview - Five-minute overview providing context, stating the problem the paper is addressing, characterizing the approach, and giving a brief account of how the problem was addressed
-**The abstract says it all**: "The success of multi-head self-attentions (MSAs) for computer vision is now indisputable. However, little is known about how MSAs work. We present fundamental explanations to help better understand the nature of MSAs."
+**The abstract says it all**: 
 
-**Context**
-Following the success of the original Vision Transformer (ViT) introduced by [Dosovitskiy et al.](https://arxiv.org/pdf/2010.11929) in 2020, Multi-head Self-Attention (MSA) mechanisms have become ubiquitous in computer vision. By 2022, numerous variants—including [Swin Transformer](https://arxiv.org/pdf/2103.14030) and [PiT](https://arxiv.org/pdf/2103.16302) demonstrated that MSAs could match or exceed the performance of traditional Convolutional Neural Networks (CNNs) on various vision tasks. Despite this empirical success, the fundamental mechanisms explaining why MSAs work remained poorly understood. The prevailing explanation attributed their success to "weak inductive bias" and "long-range dependency"—the ability to connect distant spatial locations in an image.
+"The success of multi-head self-attentions (MSAs) for computer vision is now indisputable. However, little is known about how MSAs work. We present fundamental explanations to help better understand the nature of MSAs.";
+
+"MSAs are low-pass filters, but Convs are high-pass filters. Therefore, MSAs and Convs are complementary.";
+
+"We propose AlterNet, a model in which Convblocks at the end of a stage are replaced with MSA blocks."
 
 
-- **The problems raised in this paper**: 
-     - MSAs are generally not defined well despite its ubiquitous success.
-     - MSAs are generally thought to be successful due to their their weak inductive bias and capture of long-range dependencies-the ability to connect distant spatial locations in an image, but have been known to have a tendency to overfit training datasets, consequently leading to poor predictive performance in small data regimes. This is conflicting.
-     - 
-       
-- **The paper showcases MSAs ability to**:
-   - flatten lost landscapes (Due to data specificity, not long range dependency)
+# **Context**:
+Following the success of the original Vision Transformer (ViT) introduced by [Dosovitskiy et al.](https://arxiv.org/pdf/2010.11929) in 2021, Multi-head Self-Attention (MSA) mechanisms have become ubiquitous in computer vision. By 2022, numerous variants—including [Swin Transformer](https://arxiv.org/pdf/2103.14030) and [PiT](https://arxiv.org/pdf/2103.16302) demonstrated that MSAs could match or exceed the performance of traditional Convolutional Neural Networks (CNNs) on various vision tasks. Despite this empirical success, the fundamental mechanisms explaining why MSAs work remained poorly understood. MSAs success has been attributed to "weak inductive bias" and "long-range dependency"—the ability to connect distant spatial locations in an image. Attributing MSAs success to those two traits conflict with common issues with MSAs such as the tendency to overfit training datasets, consequently leading to poor predictive performance in small data regime. 
+
+# **Problems**: 
+- MSAs are generally not defined well despite its ubiquitous success.
+- What are listed as strengths for MSAs conflict with their weaknesses.
+     - Specifically the "weak inductive bias" strength. If this is a benefit, why would MSAs struggle on small datasets?
+- 
+
+# **Positives**:
+   - Flatten lost landscapes (Due to data specificity, not long range dependency)
    - MSAs act as low pass filters
    - Play a key role in model's predictions if placed at the end of multi-stage neural networks.
 - Convolutional Neural Networks (which acts as a high pass filter) is complimentary to MSAs as shown in their model **AlterNet**
