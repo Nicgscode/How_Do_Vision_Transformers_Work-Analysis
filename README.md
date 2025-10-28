@@ -123,7 +123,7 @@ _____
 6. `z ← GlobalAveragePooling(z)`  
    ▷ Pool to `B × 2048`
 
-7. `ŷ ← ClassificationHead(z)`  
+7. `ŷ ← MultilayerPerceptron(z)`  
    ▷ Linear `2048 → 100`
 
 8. `return ŷ`
