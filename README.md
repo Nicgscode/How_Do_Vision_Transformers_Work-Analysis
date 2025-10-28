@@ -68,7 +68,7 @@ _____
 
 ![](AlterNet_Architeture.png)
 
-# Algorithm 1: AlterNet-50
+# Algorithm: AlterNet-50
 
 **Input:**  
 `x ∈ ℝ^(B×3×H×W)`, image batch  
