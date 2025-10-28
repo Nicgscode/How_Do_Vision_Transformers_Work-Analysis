@@ -16,6 +16,8 @@ ___
 
 "We propose AlterNet, a model in which Convblocks at the end of a stage are replaced with MSA blocks."
 
+![](AlterNet_Architeture.png)
+
 
 ## **Context**:
 Following the success of the original Vision Transformer (ViT) introduced by [Dosovitskiy et al.](https://arxiv.org/pdf/2010.11929) in 2021, Multi-head Self-Attention (MSA) mechanisms have become ubiquitous in computer vision. By 2022, numerous variants—including [Swin Transformer](https://arxiv.org/pdf/2103.14030) and [PiT](https://arxiv.org/pdf/2103.16302) demonstrated that MSAs could match or exceed the performance of traditional Convolutional Neural Networks (CNNs) on various vision tasks. Despite this empirical success, the fundamental mechanisms explaining why MSAs work remained poorly understood. MSAs success has been attributed to "weak inductive bias" and "long-range dependency"—the ability to connect distant spatial locations in an image. Attributing MSAs success to those two traits conflict with common issues with MSAs such as the tendency to overfit training datasets, consequently leading to poor predictive performance in small data regime. 
@@ -67,6 +69,8 @@ _____
 # Architecture overview
 ## AlterNet
 
+
+**If AlterNet ends with MSA why does it perform better on smaller datasets?**
 _____
 # Critical Analysis
 
