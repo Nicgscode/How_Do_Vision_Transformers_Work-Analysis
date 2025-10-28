@@ -24,7 +24,13 @@ Following the success of the original Vision Transformer (ViT) introduced by [Do
 - MSAs are generally not defined well despite its ubiquitous success.
 - What are listed as strengths for MSAs conflict with their weaknesses.
      - Specifically the "weak inductive bias" strength. If this is a benefit, why would MSAs struggle on small datasets?
-- 
+- Local MSAs (small window MSAs) achieve better performance than global MSAs on small and large datasets.
+
+# **Approach**: This paper has three analytical approaches to addressing these problems
+- **Loss Landscape Map Analysis** 
+     - Looking at the Hessian (Second partial derivative) eigenvalues (how a matrix transforms space) of the loss landscape to measure local curvature and convexity.
+     - 
+
 
 # **Positives**:
    - Flatten lost landscapes (Due to data specificity, not long range dependency)
