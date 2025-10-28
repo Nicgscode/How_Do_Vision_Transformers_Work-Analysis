@@ -64,10 +64,16 @@ This paper has three analytical approaches to addressing these problems. Most of
    - Convolutional Neural Networks (which acts as a high pass filter) is complimentary to MSAs as shown in their model **AlterNet**
 
 _____
-## Architecture overview
+# Architecture overview
 
 
+_____
+# Critical Analysis
 
+## **What could have been developed further**:
+- "If the added MSA block does not improve predictive performance, replace a Conv block located at the end of an earlier stage with an MSA block." (Build-up rule; Section 4.1)
+- The above rule appears to be a rule the authors learned as they experiemented, but did not take the time to understand why architecturally this works well. They should have taken the time to find the theoretical reasoning behind this.
+- My using this paper as a source, I would assume this is a rule because of the loss flattening ability of MSAs, but it is never explicitly stated in the reading. 
 _____
 # Citations
 - **Paper:** "How Do Vision Transformers Work?" (Park & Kim, ICLR 2022)
