@@ -86,7 +86,6 @@ _____
 `ŷ ∈ ℝ^(B×100)`, class logits for CIFAR-100
 
 **Build up Rule:**
-Design rules:
 
 • Replace Conv blocks with MSA blocks from the end of a baseline CNN model.
 
