@@ -31,7 +31,7 @@ Following the success of the original Vision Transformer (ViT) introduced by [Do
 
 This paper has three analytical approaches to addressing these problems. Most of which it will compare ViTs to [ResNeT](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)-A CNN image model
 - **Loss Landscape Map Analysis**
-  ![](Hessian_Eigenspace.png)
+       ![](Hessian_Eigenspace.png)
      - Looking at the Hessian (Second partial derivative) eigenvalues (how a matrix transforms space) of the loss landscape to measure local curvature and convexity.
      - Visualize loss landscapes using [filter normalization](https://arxiv.org/pdf/1712.09913) (calculated by taking the square root of the sum of the squares of all its elements)
      - Analyzes how local vs. global MSAs affect losses.
@@ -42,7 +42,19 @@ This paper has three analytical approaches to addressing these problems. Most of
   - Meaasures high vs. low frequency accuracies
 
 - **Feature Map Statistics**
-       ![]()
+       ![](Feature_map_Variance.png)
+  - Tracks feature map variance across network layers
+  - Performs lesion studies (removing individual layers) to measure importance
+  - Analyzes representational similarity using [CKA](https://arxiv.org/pdf/2010.15327) (Centered Kernel Alignment)
+ 
+- **How the problems were addressed**
+  - MSAs are generally not defined well despite its ubiquitous success
+       - "MSAs work by addressing themselves as a general form of spatial smoothing or an implementation of ensemble averagingfor proximate data points"
+   
+  - What are listed as strengths for MSAs conflict with their weaknesses
+       - The paper redefines weak inductive bias as a **LIABILITY**, not a strength. ~ "A small patch size, or a weak inductive bias, produces negative eigenvalues" Meaning non-convex losses. 
+    
+  - Local MSAs (small window MSAs) achieve better performance than global MSAs on small and large datasets 
 
 
 # **Positives**:
