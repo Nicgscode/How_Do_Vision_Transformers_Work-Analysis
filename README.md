@@ -12,6 +12,11 @@ Park, N., & Kim, S. (2022). How Do Vision Transformers Work?. In International C
 ___
 ## Overview - Five-minute overview providing context, stating the problem the paper is addressing, characterizing the approach, and giving a brief account of how the problem was addressed
 - **The abstract says it all**: "The success of multi-head self-attentions (MSAs) for computer vision is now indisputable. However, little is known about how MSAs work. We present fundamental explanations to help better understand the nature of MSAs"
+- The problems raised in this paper: 
+     - MSAs are generally not defined well despite its ubiquitous success.
+     - MSAs are generally thought to be successful due to their their weak inductive bias and capture of long-range dependencies, but have been known to have a tendency to overfit training datasets, consequently leading to poor predictive performance in small data regimes. 
+ 
+       
 - The paper showcases MSAs ability to:
    - flatten lost landscapes (Due to data specificity, not long range dependency)
    - MSAs act as low pass filters
