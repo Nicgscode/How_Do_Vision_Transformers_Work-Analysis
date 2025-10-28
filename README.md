@@ -23,7 +23,7 @@ Following the success of the original Vision Transformer (ViT) introduced by [Do
 ## **Problems**: 
 - MSAs are generally not defined well despite its ubiquitous success.
 - What are listed as strengths for MSAs conflict with their weaknesses.
-     - Specifically the "weak inductive bias" strength. If this is a benefit, why would MSAs struggle on small datasets?
+     - Specifically the "weak inductive bias" strength. If this is a benefit, why would **MSAs struggle on small datasets?**
 - Local MSAs (small window MSAs) achieve better performance than global MSAs on small and large datasets.
 
 ## **Approach**:
@@ -65,7 +65,7 @@ This paper has three analytical approaches to addressing these problems. Most of
 
 _____
 # Architecture overview
-
+## AlterNet
 
 _____
 # Critical Analysis
@@ -87,7 +87,12 @@ _____
 
 _____
 ## Impacts
-
+- The paper reframed understading of MSAs. They would now be thought of as a generalized spatial smoothing rather than incorrectely seeing them as long-range dependency exploiters
+- The Fourier analysis revealing MSAs as low-pass filters while CNNs are high-pass filters provides:
+     - A mathematical characterization of architectural differences
+     - Explanation for ViT frequency dependant advantages. 
+     - Justification for hybrid architectures (Convs for texture/high-frequency, MSAs for shape/low-frequency)
+- Shifted the Narrative from "Weak Inductive Bias" to "Complementary Mechanisms"
 _____
 ## Code Demonstration
 
