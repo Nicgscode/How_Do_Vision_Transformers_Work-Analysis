@@ -8,276 +8,147 @@
 Park, N., & Kim, S. (2022). How Do Vision Transformers Work?. In International Conference on Learning Representations (ICLR 2022). arXiv:2202.06709v4 [cs.CV]
 
 
-# Algorithm: Extract Datasets from HDF5 File
-
-**Input**: HDF5 file `Samples_Test.hdf5` containing groups `Simulated_ASD` and `Simulated_Params`.
-
-**Output**: NumPy arrays `asd`, `qasd`, `params`, and `freq`.
-
 ---
-
-**Steps**:
-
-1. **Open the HDF5 file**:
-   
-   - Use `h5py.File` in read mode to access the file.
-
-2. **Access groups**:
-   
-   - Retrieve `Simulated_ASD` and `Simulated_Params` groups.
-
-3. **Extract datasets**:
-   
-   - From `Simulated_ASD`:
-     - `ASD` → `asd`
-     - `QASD` → `qasd`
-   - From `Simulated_Params`:
-     - `Parameters` → `params`
-     - `Frequency` → `freq`
-
-4. **Convert to NumPy arrays**:
-   
-   - Use `np.array()` to convert each dataset.
-
-5. **Print shapes of arrays**:
-   
-   - Display the shape of each array for verification.
-
----
-
-**Pseudocode**:
-
-```python
-import h5py
-import numpy as np
-
-with h5py.File('Samples_Test.hdf5', 'r') as hf:
-    g1 = hf['Simulated_ASD']
-    g2 = hf['Simulated_Params']
-
-    asd = np.array(g1['ASD'])
-    qasd = np.array(g1['QASD'])
-    params = np.array(g2['Parameters'])
-    freq = np.array(g2['Frequency'])
-
-print("ASD shape:", asd.shape)
-print("QASD shape:", qasd.shape)
-print("Parameters shape:", params.shape)
-print("Frequency shape:", freq.shape)
-```
-
----
-
-**Note**: Ensure the file `Samples_Test.hdf5` is present in the working directory.
-
 ___
-## Overview 
-- 
+## Overview - Five-minute overview providing context, stating the problem the paper is addressing, characterizing the approach, and giving a brief account of how the problem was addressed
+- **The abstract says it all**: "The success of multi-head self-attentions (MSAs) for computer vision is now indisputable. However, little is known about how MSAs work. We present fundamental explanations to help better understand the nature of MSAs"
+- The paper showcases MSAs ability to:
+   - flatten lost landscapes (Due to data specificity, not long range dependency)
+   - MSAs act as low pass filters
+   - Play a key role in model's predictions if placed at the end of multi-stage neural networks.
+- Convolutional Neural Networks (which acts as a high pass filter) is complimentary to MSAs as shown in their model **AlterNet**
 
 _____
 ## Architecture overview
 
-# Algorithm: Multihead Self Attention
+# AlterNet: Core Algorithm
 
-**Input**: $$X \in \mathbb{R}^{d_{batch} \times d_{seq} \times d_{model}}$$, Input tensor
+## Algorithm 2: AlterNet Architecture Build-up Rule
 
-**Input**: Number of Heads `num_heads`
+**Input:** $\mathcal{B}$, baseline CNN architecture with $S$ stages (e.g., ResNet-50)
 
-**Input**: Dimensions of model `d_{model}`.
+**Input:** $D \in \mathbb{N}$, dataset size
 
-**Output**: NumPy arrays `asd`, `qasd`, `params`, and `freq`.
+**Output:** $\mathcal{A}$, AlterNet architecture with Conv and MSA blocks
 
 ---
 
-**Steps**:
+1. $\mathcal{A} \leftarrow \mathcal{B}$ ▷ Start with baseline CNN
+2. $n_{\text{msa}} \leftarrow 0$ ▷ MSA block counter
+3. **case** $D$ **of**
+4. $\quad |D| \leq 50\text{K}$ (small data): $\text{max MSA} \leftarrow 4$ ▷ e.g., $CIFAR-100$
+5. $\quad |D| \geq 1\text{M}$ (large data): $\text{max MSA} \leftarrow 6$ ▷ e.g., ImageNet
+6. **end case**
+7. **comment** Process stages from end to beginning
+8. **for** $s = S$ **downto** $1$ **do**
+9. $\quad \text{blocks in stage} \leftarrow \text{GetConvBlocks}(\mathcal{A}, s)$
+10. $\quad$ **comment** KEY: Place MSA at end of stage (most important position)
+11. $\quad$ **if** $n_{\text{msa}} < \text{max\_msa}$ **then**
+12. $\quad \quad \text{last\_block} \leftarrow \text{blocks\_in\_stage}[|\text{blocks\_in\_stage}|]$
+13. $\quad \quad \text{ConvertToMSA}(\text{last\_block})$ ▷ Replace last Conv in stage with MSA
+14. $\quad \quad n_{\text{msa}} \leftarrow n_{\text{msa}} + 1$
+15. $\quad$ **end if**
+16. **end for**
+17. **comment** Configure head counts per stage
+18. **for** $s = 1$ **to** $S$ **do**
+19. $\quad \text{heads}(s) \leftarrow [3, 6, 12, 24]_s$ ▷ Stage-wise head configuration
+20. **end for**
+21. **return** $\mathcal{A}$
 
-1. **Open the HDF5 file**:
-   
-   - Use `h5py.File` in read mode to access the file.
+---
 
-```python
-### Multi-Head Self-Attention (MSA) Mechanism
+## Algorithm 3: AlterNet Forward Pass (Single Stage)
 
-```python
-# MSA as Spatial Smoothing with Data-Specific Kernels
+**Input:** $X \in \mathbb{R}^{N \times H \times W \times C}$, input feature maps
 
-def multi_head_self_attention(X, num_heads, d_model):
-    """
-    Multi-Head Self-Attention mechanism
+**Input:** $L \in \mathbb{N}$, number of Conv blocks in stage
 
-    Args:
-        X: Input tensor of shape (batch, seq_len, d_model)
-        num_heads: Number of attention heads
-        d_model: Model dimension
+**Output:** $Y$, output feature maps after stage
 
-    Returns:
-        Output tensor of shape (batch, seq_len, d_model)
-    """
-    # d_k is dimension per head
-    d_k = d_model // num_heads
+**Components:** Conv blocks $\{\mathcal{C}_1, \ldots, \mathcal{C}_L\}$, MSA block $\mathcal{M}$, pooling $\mathcal{P}$
 
-    # Split into multiple heads
-    # Q, K, V projections
-    Q = linear_projection(X, d_model, d_model)  # (batch, seq_len, d_model)
-    K = linear_projection(X, d_model, d_model)
-    V = linear_projection(X, d_model, d_model)
+---
 
-    # Reshape for multi-head: (batch, num_heads, seq_len, d_k)
-    Q = reshape(Q, (batch, seq_len, num_heads, d_k)).transpose(1, 2)
-    K = reshape(K, (batch, seq_len, num_heads, d_k)).transpose(1, 2)
-    V = reshape(V, (batch, seq_len, num_heads, d_k)).transpose(1, 2)
+1. $Y \leftarrow X$
+2. **comment** Apply Conv blocks sequentially
+3. **for** $\ell = 1$ **to** $L$ **do**
+4. $\quad Y \leftarrow \mathcal{C}_\ell(Y)$ ▷ Conv: learns high-frequency patterns
+5. **end for**
+6. **comment** KEY: Apply MSA at END of stage
+7. **if** MSA exists in this stage **then**
+8. $\quad Y \leftarrow \mathcal{M}(Y)$ ▷ MSA: spatial smoothing, variance reduction
+9. **end if**
+10. **comment** Prepare for next stage
+11. **if** not last stage **then**
+12. $\quad Y \leftarrow \mathcal{P}(Y)$ ▷ Pooling/subsampling
+13. **end if**
+14. **return** $Y$
 
-    # Compute attention scores
-    # scores[i,j] = similarity between position i and j
-    scores = matmul(Q, K.transpose(-2, -1)) / sqrt(d_k)  # (batch, num_heads, seq_len, seq_len)
+---
 
-    # KEY INSIGHT: Softmax creates DATA-SPECIFIC importance weights
-    # π(x_i|x_j) - importance of position i for position j
-    attention_weights = softmax(scores, dim=-1)  # (batch, num_heads, seq_len, seq_len)
+## Algorithm 4: MSA as Spatial Smoothing (Theoretical Basis)
 
-    # Aggregate values with learned importance
-    # z_j = Σ_i π(x_i|x_j) * V_i,j
-    # This is SPATIAL SMOOTHING with trainable, data-specific kernels
-    output = matmul(attention_weights, V)  # (batch, num_heads, seq_len, d_k)
+**Input:** Feature at position $i$: $e_i \in \mathbb{R}^{d}$
 
-    # Concatenate heads and project
-    output = output.transpose(1, 2).reshape(batch, seq_len, d_model)
-    output = linear_projection(output, d_model, d_model)
+**Input:** All features: $E = [e_1, e_2, \ldots, e_N] \in \mathbb{R}^{N \times d}$
 
-    return output
+**Output:** Smoothed feature: $\tilde{e}_i \in \mathbb{R}^{d}$
 
+---
 
-# Key difference from standard convolution:
-# - Convolution: Fixed kernel, data-agnostic, channel-specific
-# - MSA: Learned kernel PER INPUT, data-specific, channel-agnostic
-```
-# Algorithm
-** Input ** 
+1. **comment** Data-dependent ensemble of neighboring features
+2. $q \leftarrow W_q e_i$ ▷ Query from current position
+3. $K \leftarrow E W_k^T$ ▷ Keys from all N positions
+4. $s \leftarrow q^T K^T / \sqrt{d}$ ▷ Similarity scores to all positions
+5. $\alpha \leftarrow \text{Softmax}(s)$ ▷ Data-dependent attention weights
+6. $V \leftarrow E W_v^T$ ▷ Values from all N positions
+7. $\tilde{e}_i \leftarrow \alpha^T V$ ▷ **Weighted ensemble of all neighbors**
+8. **return** $\tilde{e}_i$ ▷ Result: smoothed, lower-variance feature
 
+---
 
-### Local MSA (Swin-style)
+## Core Design Principles
 
-```python
-def local_multi_head_self_attention(X, num_heads, d_model, window_size):
-    """
-    Local MSA with restricted receptive field
+### Principle 1: MSA Placement Strategy
+**Place MSA at end of each stage, not throughout:**
+- Each stage acts as a mini-model with accumulated features
+- MSA at stage-end ensembles outputs from all preceding Conv blocks
+- Results in better feature aggregation than distributed MSAs
 
-    Args:
-        X: Input feature map (batch, H, W, d_model)
-        window_size: Size of local window (e.g., 7x7)
+### Principle 2: Dataset-Dependent Configuration
+| Dataset Size | MSA Blocks | Reason |
+|---|---|---|
+| Small (CIFAR-100) | 4 | Avoid non-convex loss landscape |
+| Large (ImageNet) | 6 | Large data suppresses negative eigenvalues |
 
-    Key Insight: Local MSA reduces degrees of freedom while
-    maintaining data specificity - better than global MSA!
-    """
-    batch, H, W, d_model = X.shape
+### Principle 3: Head Count Progression
+$$\text{heads per stage} = [3, 6, 12, 24] \text{ for stages } [1, 2, 3, 4]$$
 
-    # Partition into non-overlapping windows
-    # windows: (batch * num_windows, window_size, window_size, d_model)
-    windows = window_partition(X, window_size)
+More heads → better loss landscape convexity in deeper stages
 
-    # Reshape windows to sequence
-    # (batch * num_windows, window_size^2, d_model)
-    windows = windows.reshape(-1, window_size * window_size, d_model)
+### Principle 4: MSA and Conv Complementarity
 
-    # Apply MSA within each window only
-    # This restricts long-range dependencies but maintains data specificity
-    attention_output = multi_head_self_attention(windows, num_heads, d_model)
+| Property | MSA (Low-Pass) | Conv (High-Pass) |
+|---|---|---|
+| Filter Type | Low-pass | High-pass |
+| Variance Effect | **Reduces** | **Increases** |
+| Loss Landscape | **Flattens** | **Sharpens** |
+| Feature Bias | Shape-biased | Texture-biased |
 
-    # Reverse window partition
-    output = window_reverse(attention_output, window_size, H, W)
+**Key insight:** MSAs and Convs are complementary, not competing
 
-    return output
+---
 
-# Paper's Key Finding:
-# - Local MSA (window_size=7) > Global MSA
-# - Even Local MSA (window_size=3) works well!
-# - This proves: DATA SPECIFICITY matters, not long-range dependency
-```
+## Why AlterNet Works
 
-### AlterNet Architecture
+1. **Optimization:** MSA-flattened loss landscapes improve training
+2. **Generalization:** Reduced feature variance → better test performance
+3. **Data Efficiency:** Works on both small (CIFAR) and large (ImageNet) datasets
+4. **Efficiency:** 20% faster training than ResNet
 
-```python
-def alternet_stage(X, num_conv_blocks, num_msa_blocks, channels):
-    """
-    AlterNet: Alternating Convolution and MSA blocks
+---
 
-    Key Design Principle:
-    - Place Conv blocks at the BEGINNING of stages (feature extraction)
-    - Place MSA blocks at the END of stages (spatial aggregation)
+## References
 
-    Args:
-        X: Input feature map
-        num_conv_blocks: Number of ResNet-style conv blocks
-        num_msa_blocks: Number of MSA blocks (typically 1)
-        channels: Number of channels
-    """
-    # Phase 1: Conv blocks for feature transformation
-    # Convs are HIGH-PASS filters - amplify high-frequency details
-    for i in range(num_conv_blocks):
-        X = resnet_bottleneck_block(X, channels)
-
-    # Phase 2: MSA blocks for spatial smoothing
-    # MSAs are LOW-PASS filters - reduce high-frequency, ensemble predictions
-    for i in range(num_msa_blocks):
-        X = msa_block(X, channels, num_heads)
-
-    return X
-
-
-def alternet_model(input_image):
-    """
-    Full AlterNet model architecture
-
-    Structure: 4 stages with progressive downsampling
-    MSA heads increase with depth: [3, 6, 12, 24]
-
-    Why this works:
-    1. Convs diversify features (high-pass filtering)
-    2. MSAs aggregate and smooth (low-pass filtering)
-    3. Complementary behaviors lead to better representations
-    """
-    X = input_image  # (batch, 3, 224, 224)
-
-    # Stem: Initial convolution
-    X = conv_layer(X, 64, kernel=7, stride=2)  # (batch, 64, 112, 112)
-    X = batch_norm(X)
-    X = relu(X)
-    X = max_pool(X, kernel=3, stride=2)  # (batch, 64, 56, 56)
-
-    # Stage 1: 3 Conv blocks + 1 MSA block, heads=3
-    X = alternet_stage(X, num_conv_blocks=3, num_msa_blocks=1, channels=256)
-    X = downsample(X)  # (batch, 256, 28, 28)
-
-    # Stage 2: 4 Conv blocks + 1 MSA block, heads=6
-    X = alternet_stage(X, num_conv_blocks=4, num_msa_blocks=1, channels=512)
-    X = downsample(X)  # (batch, 512, 14, 14)
-
-    # Stage 3: 6 Conv blocks + 1 MSA block, heads=12
-    X = alternet_stage(X, num_conv_blocks=6, num_msa_blocks=1, channels=1024)
-    X = downsample(X)  # (batch, 1024, 7, 7)
-
-    # Stage 4: 3 Conv blocks + 1 MSA block, heads=24
-    # More heads in late stages = stronger spatial aggregation
-    X = alternet_stage(X, num_conv_blocks=3, num_msa_blocks=1, channels=2048)
-
-    # Classification head
-    X = global_average_pooling(X)  # (batch, 2048)
-    X = fully_connected(X, num_classes)  # (batch, num_classes)
-
-    return X
-
-
-# Key Differences from Standard Architectures:
-# 
-# vs. ResNet:
-#   - AlterNet adds MSA blocks at stage ends
-#   - MSAs provide spatial smoothing that Convs lack
-# 
-# vs. ViT:
-#   - AlterNet uses mostly Conv blocks, fewer MSA blocks
-#   - Works well even on small datasets (CIFAR)
-# 
-# vs. Swin:
-#   - Similar philosophy but simpler
-#   - Convs at beginning, MSAs at end of each stage
-```
+- **Paper:** "How Do Vision Transformers Work?" (Park & Kim, ICLR 2022)
+- **Code:** https://github.com/xxxnell/how-do-vits-work
